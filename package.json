@@ -1,0 +1,52 @@
+{
+  "name": "gherkinbot",
+  "version": "0.0.2",
+  "description": "The Ultimate Streaming Companion for PanickedPickle",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "ThePanickedPickle",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@twurple/api": "^8.0.2",
+    "@twurple/auth": "^8.0.2",
+    "@twurple/chat": "^8.0.2",
+    "@twurple/eventsub-ws": "^8.0.2",
+    "electron-store": "^8.1.0",
+    "obs-websocket-js": "^5.0.7",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "electron": "^39.2.6",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.gherkinbot.app",
+    "productName": "GherkinBot",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "GherkinBot",
+      "license": "license.txt"
+    },
+    "files": [
+      "**/*",
+      "!dist/*",
+      "!node_modules/.cache/*",
+      "!build/*"
+    ]
+  }
+}

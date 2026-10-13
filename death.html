@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GherkinBot Death Counter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Creepster&family=Montserrat:wght@900&family=Orbitron:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background: transparent; }
+        
+        #container {
+            /* FIXED DIMENSIONS */
+            width: 400px; 
+            height: 150px;
+            
+            /* Center Content */
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            
+            /* Background Settings */
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat;
+            background-color: transparent; 
+            border-radius: 15px;
+        }
+
+        #inner-content {
+            /* HORIZONTAL LAYOUT */
+            display: flex;
+            flex-direction: row; 
+            align-items: center; 
+            gap: 15px; 
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.8);
+            white-space: nowrap;
+        }
+
+        /* Icon */
+        #icon-area {
+            display: flex;
+            align-items: center;
+            color: #ff4444; 
+        }
+        #icon-area i {
+            font-size: 45px; 
+        }
+
+        /* "DEATHS" Text */
+        #label-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 45px; 
+            color: white; /* WHITE TEXT */
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            line-height: 1;
+            -webkit-text-stroke: 0px black; /* JS will update this */
+        }
+
+        /* The Count Number */
+        #count-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 45px; /* SAME SIZE AS TEXT NOW */
+            color: white;
+            font-weight: 900;
+            line-height: 1;
+            margin-left: 5px;
+            -webkit-text-stroke: 0px black; /* JS will update this */
+        }
+        
+        /* Pulse Animation */
+        .pulse { animation: pop 0.2s ease-in-out; }
+        @keyframes pop { 50% { transform: scale(1.2); } }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <div id="inner-content">
+            <div id="icon-area"><i class="fas fa-skull"></i></div>
+            <div id="label-text">DEATHS</div>
+            <div id="count-text">0</div>
+        </div>
+    </div>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:8080');
+
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            
+            if (msg.type === 'CONFIG_UPDATE') {
+                const conf = msg.data.widgets?.deathCounter;
+                if (conf) updateVisuals(conf);
+            }
+
+            if (msg.type === 'DEATH_UPDATE') {
+                updateVisuals(msg);
+                const el = document.getElementById('count-text');
+                el.classList.remove('pulse');
+                void el.offsetWidth; 
+                el.classList.add('pulse');
+            }
+        };
+
+        function updateVisuals(data) {
+            const container = document.getElementById('container');
+            const text = document.getElementById('count-text');
+            const label = document.getElementById('label-text');
+
+            // Update Number
+            text.innerText = data.count !== undefined ? data.count : 0;
+            
+            // Update Font
+            if(data.font) {
+                text.style.fontFamily = data.font;
+                label.style.fontFamily = data.font;
+            }
+
+            // Update Background
+            if(data.bg && data.bg !== 'none') {
+                container.style.backgroundImage = data.bg;
+            } else {
+                container.style.backgroundImage = 'none';
+            }
+
+            // Update Stroke (Applied to BOTH label and number)
+            const width = data.stroke || 0;
+            const color = data.strokeColor || '#000000';
+            const strokeValue = `${width}px ${color}`;
+            
+            text.style.webkitTextStroke = strokeValue;
+            label.style.webkitTextStroke = strokeValue;
+        }
+    </script>
+</body>
+</html>

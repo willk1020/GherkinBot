@@ -1,0 +1,18 @@
+GHERKINBOT - ALPHA TEST AGREEMENT
+
+By installing this software, you agree to the following terms:
+
+1. WORK IN PROGRESS
+   GherkinBot is currently in Alpha. It may contain bugs, crashes, or unexpected pickle behavior. You use it entirely at your own risk. 
+   The developer (PanickedPickle) is not responsible for any damage to your computer, stream, or reputation.
+
+2. CONFIDENTIALITY
+   This software is for private testing purposes only. You may not redistribute, decompile, reverse engineer, or share this .exe file with others without express permission from the developer.
+
+3. FEEDBACK
+   You are encouraged to report all bugs, glitches, or feature requests to the official Discord.
+
+4. TERMINATION
+   The developer reserves the right to revoke access to the software at any time.
+
+Copyright (c) 2025 ThePanickedPickle. All rights reserved.

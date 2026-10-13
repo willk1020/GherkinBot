@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GherkinBot Overlay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: transparent; 
+            margin: 0; padding: 0; 
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* =========================================
+           1. STANDARD ALERTS (Follows, Subs, Raids)
+           ========================================= */
+        #alert-box {
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; /* Hidden by default */
+            justify-content: center; 
+            align-items: center; 
+            text-align: center;
+            z-index: 100; /* High priority */
+        }
+
+        /* Layout: Text Over Image */
+        #alert-box.layout-over { 
+            display: grid; 
+            place-items: center;
+        }
+        .layout-over .alert-media { grid-area: 1 / 1; }
+        .layout-over .alert-text { 
+            grid-area: 1 / 1; 
+            z-index: 10; 
+            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000;
+        }
+
+        /* Layout: Text Under Image */
+        #alert-box.layout-under { 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .layout-under .alert-text { 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); 
+            margin-top: -20px; 
+            z-index: 10; 
+        }
+
+        /* Media & Text Styling */
+        #alert-image, #alert-video { 
+            max-width: 800px; 
+            max-height: 600px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            display: block;
+        }
+        .alert-text { 
+            font-weight: 800; 
+            white-space: nowrap; 
+            color: white; /* Ensure text is visible */
+        }
+
+        /* Animations */
+        .anim-fade-in { animation: fadeIn 0.5s ease forwards; }
+        .anim-bounce { animation: bounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bounce { 0% { transform: translate(-50%, -50%) scale(0.1); } 60% { transform: translate(-50%, -50%) scale(1.1); } 100% { transform: translate(-50%, -50%) scale(1); } }
+
+
+        /* =========================================
+           2. CHANNEL POINTS (Top of Screen)
+           ========================================= */
+        #branding-toast {
+            position: fixed;
+            top: 40px;   /* Anchored to TOP */
+            left: 50%;
+            /* Start hidden ABOVE screen (-200px) */
+            transform: translate(-50%, -200px) scale(0.9); 
+            
+            width: auto;
+            min-width: 400px;
+            max-width: 600px;
+            
+            /* Glassmorphism */
+            background: rgba(15, 23, 18, 0.85); 
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 16px;
+            padding: 20px 30px;
+
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            z-index: 9999;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); /* Bouncy slide down */
+            overflow: hidden;
+        }
+
+        /* Glowing Border Animation */
+        #branding-toast::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, rgba(0, 255, 65, 0.8), transparent 30%);
+            animation: borderRotate 4s linear infinite;
+            z-index: -2;
+        }
+        #branding-toast::after {
+            content: ''; position: absolute; inset: 3px; 
+            background: rgba(15, 23, 18, 0.9); 
+            border-radius: 14px; z-index: -1;
+        }
+
+        #branding-toast.visible {
+            transform: translate(-50%, 0) scale(1); /* Slide down to neutral position */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 30px rgba(0, 255, 65, 0.4);
+        }
+
+        #toast-logo {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 3px solid #00ff41;
+            animation: logoPulse 2s infinite alternate;
+            object-fit: cover; position: relative; z-index: 2;
+        }
+
+        .toast-content { display: flex; flex-direction: column; position: relative; z-index: 2; }
+        
+        .toast-title {
+            color: #fff; font-size: 28px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 1px; line-height: 1; margin-bottom: 6px;
+            text-shadow: 0 0 5px rgba(0,255,65,0.5);
+        }
+
+        .toast-footer {
+            color: #00ff41; font-size: 13px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;
+        }
+
+        @keyframes borderRotate { 100% { transform: rotate(1turn); } }
+        @keyframes logoPulse { from { box-shadow: 0 0 10px rgba(0, 255, 65, 0.4); } to { box-shadow: 0 0 25px rgba(0, 255, 65, 0.9), 0 0 10px #fff; } }
+    </style>
+</head>
+<body>
+
+    <div id="alert-box">
+        <div id="media-container" class="alert-media">
+            <img id="alert-image" src="">
+            <video id="alert-video" loop muted></video>
+        </div>
+        <div id="text-container" class="alert-text">
+            <span id="alert-message">TEST MESSAGE</span>
+        </div>
+    </div>
+
+    <div id="branding-toast">
+        <img id="toast-logo" src="gherkin-face.png" alt="Bot Logo">
+        
+        <div class="toast-content">
+            <div class="toast-title" id="toast-text">Reward Name</div>
+            <div class="toast-footer">Powered by GherkinBot</div>
+        </div>
+    </div>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8080");
+        
+        // Elements
+        const box = document.getElementById('alert-box');
+        const img = document.getElementById('alert-image');
+        const vid = document.getElementById('alert-video');
+        const txt = document.getElementById('alert-message');
+        
+        const toast = document.getElementById('branding-toast');
+        const toastTitle = document.getElementById('toast-text');
+        
+        let currentAudio = null;
+        let hideTimeout;
+
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log("Overlay Received:", data.type, data); // Debugging
+
+                // 1. Standard Alerts (Follow/Sub)
+                if (data.type === 'ALERT') {
+                    playAlert(data);
+                }
+
+                // 2. Channel Point Sounds
+                if (data.type === 'SOUND') {
+                    playSoundOnly(data);
+                }
+
+                // NOTE: Death Counter removed (Now handled by death.html)
+
+            } catch (e) { console.error("Socket Error:", e); }
+        };
+
+        // --- FUNCTION 1: Play Standard Alerts ---
+        function playAlert(data) {
+            // Reset
+            box.className = ''; 
+            void box.offsetWidth; // Trigger reflow
+
+            // Apply Layout & Animation
+            const layoutClass = `layout-${(data.layout === 'under') ? 'under' : 'over'}`;
+            box.classList.add(layoutClass);
+            box.classList.add(`anim-${data.animation || 'fade-in'}`);
+
+            // Set Text
+            txt.innerText = data.text || "ALERT";
+            txt.style.fontFamily = data.font || 'Montserrat';
+            txt.style.fontSize = (data.size || 32) + 'px';
+            txt.style.color = data.color || 'white';
+
+            // Set Media
+            img.style.display = 'none'; 
+            vid.style.display = 'none';
+
+            if (data.media) {
+                if (data.media.includes('.webm') || data.media.includes('.mp4')) {
+                    vid.src = data.media;
+                    vid.style.display = 'block';
+                    vid.play().catch(e => console.log("Video Play Error:", e));
+                } else {
+                    img.src = data.media;
+                    img.style.display = 'block';
+                }
+            }
+
+            // Play Sound
+            if (data.sound) {
+                if (currentAudio) currentAudio.pause();
+                currentAudio = new Audio(data.sound);
+                currentAudio.volume = (parseFloat(data.volume) || 50) / 100;
+                currentAudio.play().catch(e => console.log("Audio Play Error:", e));
+            }
+
+            // Hide after duration
+            setTimeout(() => {
+                box.className = ''; 
+                if(currentAudio) currentAudio.pause();
+            }, (data.duration || 5) * 1000);
+        }
+
+        // --- FUNCTION 2: Play Channel Points (The Cool Card) ---
+        function playSoundOnly(data) {
+            if (data.path) {
+                const audio = new Audio(data.path);
+                audio.volume = (data.volume || 50) / 100;
+                audio.play().catch(e => console.error(e));
+                
+                // Show the card
+                const title = data.text || "SOUND ALERT";
+                showBranding(title);
+            }
+        }
+
+        function showBranding(text) {
+            toastTitle.innerText = text;
+            toast.classList.add('visible');
+            
+            if(hideTimeout) clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

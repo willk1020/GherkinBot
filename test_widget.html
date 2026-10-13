@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Widget</title>
+    <style>
+        body { 
+            background-color: #333; 
+            color: white; 
+            font-family: sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            transition: background-color 0.2s;
+        }
+        #box {
+            padding: 50px;
+            border: 4px solid white;
+            border-radius: 20px;
+            text-align: center;
+        }
+        h1 { font-size: 50px; margin: 0; }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <h1>Waiting...</h1>
+        <p>Open GherkinBot to Connect</p>
+    </div>
+
+    <script>
+        const box = document.getElementById('box');
+        const title = document.querySelector('h1');
+
+        // CONNECT TO GHERKINBOT
+        const socket = new WebSocket("ws://localhost:8080");
+
+        socket.onopen = () => {
+            title.innerText = "CONNECTED";
+            box.style.borderColor = "#00ff41";
+        };
+
+        socket.onmessage = (event) => {
+            // Parse the signal from the bot
+            const signal = JSON.parse(event.data);
+            console.log("Received:", signal);
+
+            // React to the "REDEMPTION" test signal
+            if (signal.type === 'REDEMPTION') {
+                title.innerText = "JUMPSCARE!";
+                document.body.style.backgroundColor = "red";
+                
+                // Reset after 1 second
+                setTimeout(() => {
+                    document.body.style.backgroundColor = "#333";
+                    title.innerText = "Waiting...";
+                }, 1000);
+            }
+        };
+    </script>
+</body>
+</html>

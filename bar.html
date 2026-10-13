@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GherkinBot Omni-Bar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            margin: 0; padding: 0; overflow: hidden; 
+            background: transparent; 
+            font-family: 'Montserrat', sans-serif; 
+        }
+
+        /* CONTAINER: Glassmorphism Bar */
+        .bar-container {
+            position: absolute; top: 10px; left: 10px; right: 10px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 30px;
+            border: 2px solid #333;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: border-color 0.3s;
+        }
+
+        /* FILL: The Green Progress */
+        .bar-fill {
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 0%; /* Updates via JS */
+            background: linear-gradient(90deg, #004d13, #00ff41);
+            transition: width 1s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+            z-index: 1;
+        }
+
+        /* TEXT: Sits on top of the fill */
+        .bar-content {
+            position: relative; z-index: 2;
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 0 30px;
+            color: #fff;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+        }
+
+        .left-section { display: flex; align-items: center; gap: 15px; }
+        .bar-label { color: #ccc; font-weight: 700; font-size: 18px; letter-spacing: 1px; }
+        .bar-value { color: #fff; font-weight: 900; font-size: 28px; }
+        .bar-target { color: #888; font-size: 18px; font-weight: 700; }
+
+        /* PULSE ANIMATION (When goal hit) */
+        .pulse { animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); border-color: #00ff41; }
+            70% { box-shadow: 0 0 0 20px rgba(0, 255, 65, 0); border-color: #00ff41; }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0); border-color: #00ff41; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bar-container" id="main-bar">
+        <div class="bar-fill" id="fill" style="width: 5%;"></div>
+        <div class="bar-content">
+            <div class="left-section">
+                <span class="bar-label" id="label">CONNECTING...</span>
+                <span class="bar-value" id="current">0</span>
+            </div>
+            <div class="bar-target">GOAL: <span id="target">100</span></div>
+        </div>
+    </div>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8080");
+        
+        // DEFAULT STATE (Visual Placeholder)
+        let state = {
+            current: 0,
+            target: 100,
+            label: "LOADING..."
+        };
+
+        socket.onopen = () => {
+            console.log("Connected to GherkinBot!");
+            // Optional: Request latest state if needed
+        };
+
+        socket.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                
+                // 1. Initial Config Load
+                if (msg.type === 'CONFIG_UPDATE' && msg.data.barSettings) {
+                    updateBar(msg.data.barSettings);
+                }
+
+                // 2. Live Progress Update
+                if (msg.type === 'BAR_UPDATE') {
+                    updateBar(msg.data);
+                }
+
+            } catch (e) { console.error(e); }
+        };
+
+        function updateBar(data) {
+            if(!data) return;
+
+            // Update State
+            if(data.current !== undefined) state.current = data.current;
+            if(data.target !== undefined) state.target = data.target;
+            if(data.label !== undefined) state.label = data.label;
+
+            // Render Text
+            document.getElementById('label').innerText = state.label;
+            document.getElementById('current').innerText = Math.floor(state.current);
+            document.getElementById('target').innerText = state.target;
+
+            // Calculate Percentage
+            let percentage = 0;
+            if (state.target > 0) {
+                percentage = (state.current / state.target) * 100;
+            }
+            percentage = Math.min(100, Math.max(0, percentage)); // Clamp between 0-100
+
+            // Animate Fill
+            document.getElementById('fill').style.width = percentage + "%";
+
+            // Goal Hit Effect
+            const container = document.getElementById('main-bar');
+            if (state.current >= state.target && state.target > 0) {
+                container.classList.add('pulse');
+                document.getElementById('label').style.color = "#00ff41"; // Green text
+            } else {
+                container.classList.remove('pulse');
+                document.getElementById('label').style.color = "#ccc"; // Reset text
+            }
+        }
+    </script>
+</body>
+</html>

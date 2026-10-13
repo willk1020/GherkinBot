@@ -1,0 +1,259 @@
+{
+  "streamSettings": {
+    "channelName": "thepanickedpickle"
+  },
+  "raidLogic": {
+    "autoShoutout": false,
+    "minViewerThreshold": 5,
+    "ignoredUsers": [
+      "Nightbot"
+    ],
+    "shoutoutMessage": "Check out {user}!"
+  },
+  "alerts": {
+    "follow": {
+      "enabled": true,
+      "variations": [
+        {
+          "id": "default",
+          "name": "Default follow",
+          "condition": "default",
+          "media": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\file_0000000094dc61f687c631943e61e8e6.png",
+          "sound": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\Sounds\\Follow.mp3",
+          "volume": "45",
+          "layout": "under",
+          "fontFamily": "Arial",
+          "fontSize": 24,
+          "fontColor": "#ffffff",
+          "animationIn": "fade-in",
+          "duration": "7",
+          "message": "{username} is following!",
+          "font": "Arial",
+          "size": "40",
+          "color": "#9fe30d",
+          "animation": "fade-in",
+          "minAmount": 0
+        }
+      ]
+    },
+    "sub": {
+      "enabled": true,
+      "variations": [
+        {
+          "name": "Default sub",
+          "minAmount": 0,
+          "media": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\file_000000001a1062309734989d13098f98 (1).png",
+          "sound": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\Sounds\\Sub.mp3",
+          "volume": "50",
+          "message": "{username} alert!",
+          "layout": "under",
+          "animation": "fade-in",
+          "duration": "7",
+          "font": "Arial",
+          "size": "40",
+          "color": "#71f207"
+        }
+      ]
+    },
+    "raid": {
+      "enabled": true,
+      "variations": [
+        {
+          "name": "Default raid",
+          "minAmount": 0,
+          "media": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\file_0000000084806230853edac4c4ed37f6.png",
+          "sound": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\Sounds\\Raid.mp3",
+          "volume": "50",
+          "message": "{username} alert!",
+          "layout": "under",
+          "animation": "fade-in",
+          "duration": "10",
+          "font": "Arial",
+          "size": "40",
+          "color": "#a3f014"
+        }
+      ]
+    },
+    "cheer": {
+      "enabled": true,
+      "variations": [
+        {
+          "name": "Default cheer",
+          "minAmount": 0,
+          "media": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\file_000000008cfc61f5aa6d511b384d2054.png",
+          "sound": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\Sounds\\Bits.mp3",
+          "volume": "50",
+          "message": "{username} alert!",
+          "layout": "under",
+          "animation": "fade-in",
+          "duration": "5",
+          "font": "Arial",
+          "size": "40",
+          "color": "#d36c17"
+        }
+      ]
+    },
+    "hype": {
+      "enabled": true,
+      "variations": [
+        {
+          "name": "Default hype",
+          "minAmount": 0,
+          "media": "",
+          "sound": "",
+          "volume": 50,
+          "message": "{username} alert!",
+          "layout": "over",
+          "animation": "fade-in",
+          "duration": 5
+        }
+      ]
+    },
+    "gift": {
+      "variations": [
+        {
+          "name": "Default gift",
+          "minAmount": 0,
+          "media": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\file_00000000e3ec61f7b82328b56805d02d.png",
+          "sound": "C:\\Users\\trev1\\OneDrive\\Desktop\\PanicedPickle\\Sounds\\Gifted.mp3",
+          "volume": "50",
+          "message": "{username} alert!",
+          "layout": "over",
+          "animation": "fade-in",
+          "duration": "8",
+          "font": "Arial",
+          "size": "45",
+          "color": "#f5e105"
+        }
+      ]
+    }
+  },
+  "commands": [
+    {
+      "trigger": "!discord",
+      "response": "Join our discord! https://discord.gg/G6vPT5NvaR",
+      "permission": "everyone",
+      "globalCooldown": 10,
+      "userCooldown": 0,
+      "type": "text",
+      "enabled": true,
+      "count": 0
+    },
+    {
+      "trigger": "!lurk",
+      "response": "{user} is lurking in the shadows...",
+      "enabled": true,
+      "permission": "everyone",
+      "userCooldown": 60
+    }
+  ],
+  "timers": [
+    {
+      "message": "If you are enjoying the stream make sure to hit that follow button so you know when I'm live!",
+      "interval": 20,
+      "minLines": 20,
+      "enabled": true,
+      "lastSent": 0,
+      "linesSince": 15
+    },
+    {
+      "message": "Hop in The Brine Barrel to keep up with the community!! https://discord.gg/tDZuteTjWy",
+      "interval": 45,
+      "minLines": 50,
+      "enabled": true,
+      "lastSent": 0,
+      "linesSince": 15
+    }
+  ],
+  "protection": {
+    "links": false,
+    "caps": false,
+    "spam": false,
+    "raid": false
+  },
+  "barSettings": {
+    "label": "HYPE LEVEL",
+    "target": 50,
+    "current": 20,
+    "sources": {
+      "follow": {
+        "enabled": false,
+        "value": 50
+      },
+      "sub": {
+        "enabled": false,
+        "value": 500
+      },
+      "bits": {
+        "enabled": false,
+        "value": 100
+      },
+      "points": {
+        "enabled": true,
+        "value": 10
+      }
+    }
+  },
+  "sounds": [
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    },
+    {
+      "path": "",
+      "hotkey": "",
+      "volume": 50
+    }
+  ]
+}
