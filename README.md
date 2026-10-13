@@ -29,9 +29,7 @@ Modular Dashboard Widgets: Features a dynamic UI with self-contained widgets for
 **Technical Highlight: Scope Management & API Constraints**
 **The Challenge:** Twitch's EventSub API requires a secure, public-facing HTTPS endpoint for real-time push notifications. Because Gherkinbot was strictly scoped as a locally hosted desktop application to ensure zero latency, it could not pass the external security requirements for webhook delivery.
 
-Related Repositories
-* **[Gherkinbot Website](https://github.com/willk1020/GherkinBotSite):**
-
 **The Solution:** Rather than bloating the project with paid cloud relay servers or compromising the local-hosting requirement, I made the architectural decision to cull the follower-alert feature entirely. This allowed me to reallocate development time to the core deliverables, successfully shipping the custom widgets, sound alert pipeline, and OBS WebSocket integrations without stalling the project.
 
-I never finished these because I stopped streaming
+Related Repositories
+* **[Gherkinbot Website](https://github.com/willk1020/GherkinBotSite):**
